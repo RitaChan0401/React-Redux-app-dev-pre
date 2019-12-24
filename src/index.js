@@ -1,12 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+//redux-thunkはミドルウェアに該当するもの。これを適用するために'applyMiddleware'が必要
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
+import reducer from "./reducers"
+import EventsIndex from './components/events_index';
+import EventsNew from './components/events_new'
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = createStore(reducer, applyMiddleware(thunk));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
+ReactDOM.render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/events/new" component={EventsNew} />
+          <Route exact path="/" component={EventsIndex} />
+        </Switch>
+      </BrowserRouter>
+    </Provider>,
+    document.getElementById('root')
+);
 serviceWorker.unregister();
